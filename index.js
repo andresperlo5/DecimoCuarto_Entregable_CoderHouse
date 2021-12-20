@@ -7,7 +7,6 @@ const http = require('http')
 const server = http.createServer(app)
 const { Server } = require('socket.io')
 const io = new Server(server)
-const port = process.env.PORT || 3002
 const morgan = require('morgan')
 const routerRoutes = require('./routes/index.routes')
 const ArrayProducts = require('./products/products.Array')
@@ -21,6 +20,11 @@ const LocalStrategy = require('passport-local').Strategy
 
 const userModel = require('./models/user.model')
 const bcryptjs = require('bcryptjs')
+
+const options = {default: {puerto: 3001}}
+const minimist = require('minimist')(process.argv.splice(2), options)
+delete minimist['_']
+const PortMinimist = minimist.puerto ? minimist.puerto : options
 
 app.use(session({
 
@@ -141,6 +145,7 @@ io.on("connection", (socket) => {
     });
 });
 
-server.listen(port, () => {
-    console.log('Servidor Andando en el puerto: ', port);
+//puerto se ejecuta en consola (minimist)
+server.listen(PortMinimist, () => {
+    console.log('Servidor Andando en el puerto: ', PortMinimist);
 })
